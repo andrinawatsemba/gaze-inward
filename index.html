@@ -13,7 +13,7 @@
         <span id="status-badge" class="status status-uninitialized">Ready</span>
     </header>
 
-    <div id="demo-banner" class="demo-banner" hidden>Demo mode: simulated breathing rate</div>
+    <div id="simulation-banner" class="simulation-banner" hidden>Simulated breathing rate (developer test)</div>
 
     <div id="error-banner" class="error-banner" hidden>
         <span class="error-banner-code" id="error-code">—</span>
@@ -23,10 +23,19 @@
     <main>
         <section id="welcome" class="flow-section">
             <p class="eyebrow">Gaze Inward</p>
-            <h2>A short breathing check-in</h2>
-            <p>Gaze Inward reads your breathing for a few quiet moments.</p>
+            <h2>A short open-eyes breathing meditation</h2>
+            <p>Rest your gaze on the circle and follow your breath. The circle keeps pace with your own breathing.</p>
             <p class="consent">The camera is used only to read breathing. Video is not saved by this app. The internet is needed to check the key. Wellness only.</p>
-            <button id="btn-begin" type="button">Begin</button>
+            <p class="safety-line">If you feel dizzy or uncomfortable, breathe normally and stop. This app is not medical advice.</p>
+            <button id="btn-begin-camera" type="button">Begin with the camera</button>
+            <p class="button-note">The circle adapts to your own breathing.</p>
+            <button id="btn-practice-camera-free" class="secondary-button" type="button">Practice without the camera</button>
+            <button id="btn-practice" class="link-button" type="button">How to practice</button>
+            <div class="history">
+                <h3>Past sessions</h3>
+                <ul id="history-list"></ul>
+                <button id="btn-clear-history" class="secondary-button" type="button">Clear history</button>
+            </div>
         </section>
 
         <section id="setup" class="flow-section" hidden>
@@ -37,7 +46,30 @@
                 <div id="validation" class="hint">When you are ready, choose Start reading.</div>
             </div>
             <button id="btn-start-reading" type="button">Start reading</button>
-            <button id="btn-demo" class="secondary-button" type="button">Try demo (no camera)</button>
+        </section>
+
+        <section id="camera-free" class="flow-section" hidden>
+            <h2>Practice without the camera</h2>
+            <p>No camera needed. Choose a comfortable pace. In this mode the circle does not adapt to you.</p>
+            <label class="pace-label" for="camera-free-pace">Breaths per minute</label>
+            <div class="pace-control">
+                <input id="camera-free-pace" type="range" min="6" max="16" step="1" value="12">
+                <output id="camera-free-pace-value" for="camera-free-pace">12</output>
+            </div>
+            <button id="btn-start-camera-free" type="button">Start</button>
+        </section>
+
+        <section id="practice" class="flow-section" hidden>
+            <h2>How to practice</h2>
+            <h3>Following your breath</h3>
+            <p>Sit comfortably. Let your attention rest on the feeling of breathing: the air at your nose, or your chest or belly rising and falling. Your eyes can be open or closed. When your mind wanders, which is normal, notice it and gently return to the breath.</p>
+            <h3>Soft gaze with open eyes</h3>
+            <p>Keep your eyes open and let them rest on one steady point, without staring hard. Let the edges of what you see stay soft. Some people find this easier than closing their eyes, especially if closing them makes their thoughts feel louder. In this app, the circle is the point to rest your gaze on.</p>
+            <h3>How the camera mode works</h3>
+            <p>The app reads your breathing rate with your camera for about 35 seconds, then switches the camera off and guides you at a pace close to your own. It checks again a few times during the session.</p>
+            <h3>A note</h3>
+            <p>Different practices suit different people. This app is for wellness only. It does not treat or improve any health condition. If a practice makes you feel uncomfortable, stop. If something is troubling you, talk to someone you trust or a health professional.</p>
+            <button id="btn-practice-back" class="secondary-button" type="button">Back</button>
         </section>
 
         <section id="reading" class="flow-section" hidden>
@@ -55,13 +87,23 @@
                 <div id="guide-orb" class="orb"></div>
             </div>
             <div id="guide-word" class="guide-word">Breathe in</div>
+            <p class="soft-gaze">Keep your eyes open. Let your gaze rest softly on the circle.</p>
             <p id="guide-message" class="guide-message"></p>
         </section>
 
         <section id="result-section" class="flow-section" hidden>
             <p class="eyebrow">Your check-in</p>
-            <h2 id="result"></h2>
+            <h2>Session summary</h2>
+            <p id="result"></p>
             <p id="result-detail" class="wellness-note"></p>
+            <ul id="summary-list" class="summary-list"></ul>
+            <p class="safety-line">If you feel dizzy or uncomfortable, breathe normally and stop. This app is not medical advice.</p>
+            <p class="self-report-question">How do you feel now?</p>
+            <div class="self-report">
+                <button type="button" data-self-report="Calmer">Calmer</button>
+                <button type="button" data-self-report="About the same">About the same</button>
+                <button type="button" data-self-report="More restless">More restless</button>
+            </div>
             <div class="result-actions">
                 <button id="btn-try-again" type="button">Try again</button>
                 <button id="btn-start-over" type="button">Start over</button>
