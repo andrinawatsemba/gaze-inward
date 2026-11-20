@@ -1,0 +1,1 @@
+module.exports = { API_KEY: 'BD7TyvKj4l8GLN1F2P0IA3Y2ZYxGLPMW92ChZy8J' };
