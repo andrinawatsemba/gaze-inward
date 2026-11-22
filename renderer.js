@@ -5,8 +5,10 @@
 
 'use strict';
 
+const sessionSeconds = 300;
+
 const SESSION_CONFIG = {
-    totalMs: 5 * 60 * 1000,
+    totalMs: sessionSeconds * 1000,
     readingMs: 35 * 1000,
     guideMs: 75 * 1000,
     firstGuidePaceMultiplier: 0.9,
@@ -61,6 +63,7 @@ const els = {
     cameraFreePaceValue: $('camera-free-pace-value'),
     btnPractice: $('btn-practice'),
     btnPracticeBack: $('btn-practice-back'),
+    btnEndSession: $('btn-end-session'),
     btnTryAgain: $('btn-try-again'),
     btnStartOver: $('btn-start-over'),
     result: $('result'),
@@ -181,6 +184,12 @@ function renderHistory() {
     }
     for (const session of history) {
         const item = document.createElement('li');
+        if (sessionModeLabel(session) === 'camera-free') {
+            const pace = session.paces?.[0] ?? session.readings?.[0]?.pace;
+            item.textContent = `${new Date(session.date).toLocaleString()} — camera-free — pace ${pace ?? '—'} breaths/min`;
+            els.historyList.appendChild(item);
+            continue;
+        }
         const readings = session.readings.map((reading) => (
             reading.rate == null
                 ? `no steady reading / ${reading.pace} breaths/min`
@@ -193,6 +202,12 @@ function renderHistory() {
 
 function renderSummary() {
     els.summaryList.replaceChildren();
+    if (sessionMode === 'camera-free') {
+        const item = document.createElement('li');
+        item.textContent = `Pace used: ${currentPace} breaths per minute`;
+        els.summaryList.appendChild(item);
+        return;
+    }
     for (const reading of sessionReadings) {
         const item = document.createElement('li');
         const rate = reading.rate == null
@@ -345,6 +360,15 @@ function startGuide() {
         showResult();
         return;
     }
+    if (sessionMode === 'camera-free') {
+        els.guideMessage.textContent = 'Camera-free mode: the pace stays fixed.';
+        els.guideWord.textContent = 'Breathe in';
+        showSection('guide');
+        guideStartedAt = performance.now();
+        guideAnimationFrame = requestAnimationFrame(animateGuide);
+        guideTimer = setTimeout(showResult, remaining);
+        return;
+    }
     const guideDuration = Math.min(SESSION_CONFIG.guideMs, remaining);
     els.guideMessage.textContent = sessionMode === 'camera-free'
         ? 'Camera-free mode: the pace stays fixed.'
@@ -395,6 +419,7 @@ function startCountdown() {
 }
 
 async function startMeasurement() {
+    if (sessionMode === 'camera-free') return;
     els.errorBanner.hidden = true;
     els.btnStartReading.disabled = true;
     readingStableRate = null;
@@ -515,6 +540,11 @@ els.cameraFreePace.addEventListener('input', () => {
 });
 els.btnPractice.addEventListener('click', () => showSection('practice'));
 els.btnPracticeBack.addEventListener('click', () => showSection('welcome'));
+els.btnEndSession.addEventListener('click', async () => {
+    clearTimers();
+    if (sessionMode === 'camera') await stopMeasurement();
+    showResult();
+});
 els.btnTryAgain.addEventListener('click', () => {
     if (sessionMode === 'camera-free') showSection('cameraFree');
     else showCameraSetup();
