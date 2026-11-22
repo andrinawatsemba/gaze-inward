@@ -68,6 +68,7 @@ const els = {
     btnStartOver: $('btn-start-over'),
     result: $('result'),
     resultDetail: $('result-detail'),
+    selfReportMessage: $('self-report-message'),
     sections: {
         welcome: $('welcome'),
         setup: $('setup'),
@@ -222,6 +223,7 @@ function saveSelfReport(report) {
     if (!currentSession) return;
     currentSession.selfReport = report;
     persistSession(currentSession);
+    els.selfReportMessage.hidden = false;
     for (const button of els.selfReportButtons) {
         button.classList.toggle('selected', button.dataset.selfReport === report);
     }
@@ -497,7 +499,7 @@ function showResult() {
         persistSession(currentSession);
     }
     if (sessionMode === 'camera-free') {
-        els.result.textContent = `Pace used: ${currentPace} breaths per minute`;
+        els.result.textContent = '';
     } else {
         els.result.textContent = lastStableBreathing == null
             ? "I couldn't get a steady reading this time."
@@ -505,6 +507,7 @@ function showResult() {
     }
     renderSummary();
     els.resultDetail.textContent = 'These numbers are shown for interest only. They are not a score.';
+    els.selfReportMessage.hidden = !currentSession.selfReport;
     for (const button of els.selfReportButtons) {
         button.classList.toggle('selected', button.dataset.selfReport === currentSession.selfReport);
     }
